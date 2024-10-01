@@ -1,12 +1,3 @@
-[![Godoc](https://img.shields.io/badge/godoc-Reference-brightgreen.svg?style=flat)](https://godoc.org/github.com/contentful-labs/contentful-go)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.com/contentful-labs/contentful-go.svg?token=ppF3HxXy28XU9AwHHiGX&branch=master)](https://travis-ci.com/contentful-labs/contentful-go)
-
-❗ Disclaimer
-=====
-
-**This project is not actively maintained or monitored.** Feel free to fork and work on it in your account. If you want to maintain but also collaborate with fellow developers, feel free to reach out to [Contentful's Developer Relations](mailto:devrel-mkt@contentful.com) team to move the project into our community GitHub organisation [contentful-userland](https://github.com/contentful-userland/).
-
 # contentful-go
 
 GoLang SDK for [Contentful's](https://www.contentful.com) Content Delivery, Preview and Management API's.
@@ -19,7 +10,7 @@ GoLang SDK for [Contentful's](https://www.contentful.com) Content Delivery, Prev
 
 # Install
 
-`go get github.com/contentful-labs/contentful-go`
+`go get github.com/s2-t2/contentful-go`
 
 # Getting started
 
@@ -27,7 +18,7 @@ Import into your Go project or library
 
 ```go
 import (
-	contentful "github.com/contentful-labs/contentful-go"
+	contentful "github.com/s2-t2/contentful-go"
 )
 ```
 
@@ -64,13 +55,13 @@ cma.Debug = true
 
 Currently SDK exposes the following resource services:
 
-* Spaces
-* APIKeys
-* Assets
-* ContentTypes
-* Entries
-* Locales
-* Webhooks
+- Spaces
+- APIKeys
+- Assets
+- ContentTypes
+- Entries
+- Locales
+- Webhooks
 
 Every resource service has at least the following interface:
 
@@ -105,6 +96,7 @@ for _, contentType := range collection.ToContentType() {
 All the endpoints which return an array of objects are wrapped around `Collection` struct. The main features of `Collection` are pagination and type assertion.
 
 ### Pagination
+
 WIP
 
 ### Type assertion
@@ -147,11 +139,13 @@ $> go test -v -race
 ## Documentation/References
 
 ### Contentful
+
 [Content Delivery API](https://www.contentful.com/developers/docs/references/content-delivery-api/)
 [Content Management API](https://www.contentful.com/developers/docs/references/content-management-api/)
 [Content Preview API](https://www.contentful.com/developers/docs/references/content-preview-api/)
 
 ### GoLang
+
 [Effective Go](https://golang.org/doc/effective_go.html)
 
 ## Support

@@ -1,0 +1,2793 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>contentful-go: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/s2-t2/contentful-go/api_key.go (0.0%)</option>
+				
+				<option value="file1">github.com/s2-t2/contentful-go/asset.go (0.0%)</option>
+				
+				<option value="file2">github.com/s2-t2/contentful-go/collection.go (36.6%)</option>
+				
+				<option value="file3">github.com/s2-t2/contentful-go/content_type.go (82.9%)</option>
+				
+				<option value="file4">github.com/s2-t2/contentful-go/content_type_field_validations.go (90.2%)</option>
+				
+				<option value="file5">github.com/s2-t2/contentful-go/contentful.go (78.9%)</option>
+				
+				<option value="file6">github.com/s2-t2/contentful-go/entry.go (19.7%)</option>
+				
+				<option value="file7">github.com/s2-t2/contentful-go/entry_field.go (0.0%)</option>
+				
+				<option value="file8">github.com/s2-t2/contentful-go/errors.go (0.0%)</option>
+				
+				<option value="file9">github.com/s2-t2/contentful-go/locale.go (86.7%)</option>
+				
+				<option value="file10">github.com/s2-t2/contentful-go/query.go (98.0%)</option>
+				
+				<option value="file11">github.com/s2-t2/contentful-go/space.go (90.0%)</option>
+				
+				<option value="file12">github.com/s2-t2/contentful-go/webhook.go (53.3%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package contentful
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "strconv"
+)
+
+// APIKeyService service
+type APIKeyService service
+
+// APIKey model
+type APIKey struct {
+        Sys           *Sys            `json:"sys,omitempty"`
+        Name          string          `json:"name,omitempty"`
+        Description   string          `json:"description,omitempty"`
+        AccessToken   string          `json:"accessToken,omitempty"`
+        Policies      []*APIKeyPolicy `json:"policies,omitempty"`
+        PreviewAPIKey *PreviewAPIKey  `json:"preview_api_key,omitempty"`
+}
+
+// APIKeyPolicy model
+type APIKeyPolicy struct {
+        Effect  string `json:"effect,omitempty"`
+        Actions string `json:"actions,omitempty"`
+}
+
+// PreviewAPIKey model
+type PreviewAPIKey struct {
+        Sys *Sys
+}
+
+// MarshalJSON for custom json marshaling
+func (apiKey *APIKey) MarshalJSON() ([]byte, error) <span class="cov0" title="0">{
+        return json.Marshal(&amp;struct {
+                Name        string `json:"name"`
+                Description string `json:"description,omitempty"`
+        }{
+                Name:        apiKey.Name,
+                Description: apiKey.Description,
+        })
+}</span>
+
+// GetVersion returns entity version
+func (apiKey *APIKey) GetVersion() int <span class="cov0" title="0">{
+        version := 1
+        if apiKey.Sys != nil </span><span class="cov0" title="0">{
+                version = apiKey.Sys.Version
+        }</span>
+
+        <span class="cov0" title="0">return version</span>
+}
+
+// List returns all api keys collection
+func (service *APIKeyService) List(spaceID string) *Collection <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/api_keys", spaceID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;Collection{}
+        }</span>
+
+        <span class="cov0" title="0">col := NewCollection(&amp;CollectionOptions{})
+        col.c = service.c
+        col.req = req
+
+        return col</span>
+}
+
+// Get returns a single api key entity
+func (service *APIKeyService) Get(spaceID, apiKeyID string) (*APIKey, error) <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/api_keys/%s", spaceID, apiKeyID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">var apiKey APIKey
+        if err := service.c.do(req, &amp;apiKey); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;apiKey, nil</span>
+}
+
+// Upsert updates or creates a new api key entity
+func (service *APIKeyService) Upsert(spaceID string, apiKey *APIKey) error <span class="cov0" title="0">{
+        bytesArray, err := json.Marshal(apiKey)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">var path string
+        var method string
+
+        if apiKey.Sys != nil &amp;&amp; apiKey.Sys.CreatedAt != "" </span><span class="cov0" title="0">{
+                path = fmt.Sprintf("/spaces/%s/api_keys/%s", spaceID, apiKey.Sys.ID)
+                method = "PUT"
+        }</span> else<span class="cov0" title="0"> {
+                path = fmt.Sprintf("/spaces/%s/api_keys", spaceID)
+                method = "POST"
+        }</span>
+
+        <span class="cov0" title="0">req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">req.Header.Set("X-Contentful-Version", strconv.Itoa(apiKey.GetVersion()))
+
+        return service.c.do(req, apiKey)</span>
+}
+
+// Delete deletes a sinlge api key entity
+func (service *APIKeyService) Delete(spaceID string, apiKey *APIKey) error <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/api_keys/%s", spaceID, apiKey.Sys.ID)
+        method := "DELETE"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">version := strconv.Itoa(apiKey.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, nil)</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package contentful
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "strconv"
+)
+
+// AssetsService service
+type AssetsService service
+
+// File model
+type File struct {
+        Name        string      `json:"fileName,omitempty"`
+        ContentType string      `json:"contentType,omitempty"`
+        URL         string      `json:"url,omitempty"`
+        UploadURL   string      `json:"upload,omitempty"`
+        Detail      *FileDetail `json:"details,omitempty"`
+}
+
+// FileDetail model
+type FileDetail struct {
+        Size  int        `json:"size,omitempty"`
+        Image *FileImage `json:"image,omitempty"`
+}
+
+// FileImage model
+type FileImage struct {
+        Width  int `json:"width,omitempty"`
+        Height int `json:"height,omitempty"`
+}
+
+// FileFields model
+type FileFields struct {
+        Title       string `json:"title,omitempty"`
+        Description string `json:"description,omitempty"`
+        File        *File  `json:"file,omitempty"`
+}
+
+// Asset model
+type Asset struct {
+        locale string
+        Sys    *Sys        `json:"sys"`
+        Fields *FileFields `json:"fields"`
+}
+
+// MarshalJSON for custom json marshaling
+func (asset *Asset) MarshalJSON() ([]byte, error) <span class="cov0" title="0">{
+        payload := map[string]interface{}{
+                "sys": "",
+                "fields": map[string]interface{}{
+                        "title":       map[string]string{},
+                        "description": map[string]string{},
+                        "file":        map[string]interface{}{},
+                },
+        }
+
+        payload["sys"] = asset.Sys
+        fields := payload["fields"].(map[string]interface{})
+
+        // title
+        title := fields["title"].(map[string]string)
+        title[asset.locale] = asset.Fields.Title
+
+        // description
+        description := fields["description"].(map[string]string)
+        description[asset.locale] = asset.Fields.Description
+
+        // file
+        file := fields["file"].(map[string]interface{})
+        file[asset.locale] = asset.Fields.File
+
+        return json.Marshal(payload)
+}</span>
+
+// UnmarshalJSON for custom json unmarshaling
+func (asset *Asset) UnmarshalJSON(data []byte) error <span class="cov0" title="0">{
+        type Alias *Asset
+
+        var payload map[string]interface{}
+        if err := json.Unmarshal(data, &amp;payload); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">fileName := payload["fields"].(map[string]interface{})["file"].(map[string]interface{})["fileName"]
+        localized := true
+
+        if fileName == nil </span><span class="cov0" title="0">{
+                localized = false
+        }</span>
+
+        <span class="cov0" title="0">if localized == false </span><span class="cov0" title="0">{
+                asset.Sys = &amp;Sys{}
+                b, _ := json.Marshal(payload["sys"])
+                if err := json.Unmarshal(b, asset.Sys); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">title := payload["fields"].(map[string]interface{})["title"]
+                if title != nil </span><span class="cov0" title="0">{
+                        title = title.(map[string]interface{})[asset.locale]
+                }</span>
+
+                <span class="cov0" title="0">description := payload["fields"].(map[string]interface{})["description"]
+                if description != nil </span><span class="cov0" title="0">{
+                        description = description.(map[string]interface{})[asset.locale]
+                }</span>
+
+                <span class="cov0" title="0">asset.Fields = &amp;FileFields{
+                        Title:       title.(string),
+                        Description: description.(string),
+                        File:        &amp;File{},
+                }
+
+                file := payload["fields"].(map[string]interface{})["file"].(map[string]interface{})[asset.locale]
+                if err := json.Unmarshal([]byte(file.(string)), asset.Fields.File); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        } else<span class="cov0" title="0"> {
+                if err := json.Unmarshal(data, Alias(asset)); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+// GetVersion returns entity version
+func (asset *Asset) GetVersion() int <span class="cov0" title="0">{
+        version := 1
+        if asset.Sys != nil </span><span class="cov0" title="0">{
+                version = asset.Sys.Version
+        }</span>
+
+        <span class="cov0" title="0">return version</span>
+}
+
+// List returns asset collection
+func (service *AssetsService) List(spaceID string) *Collection <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/assets", spaceID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;Collection{}
+        }</span>
+
+        <span class="cov0" title="0">col := NewCollection(&amp;CollectionOptions{})
+        col.c = service.c
+        col.req = req
+
+        return col</span>
+}
+
+// Get returns a single asset entity
+func (service *AssetsService) Get(spaceID, assetID string) (*Asset, error) <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/assets/%s", spaceID, assetID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">var asset Asset
+        if err := service.c.do(req, &amp;asset); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;asset, nil</span>
+}
+
+// Upsert updates or creates a new asset entity
+func (service *AssetsService) Upsert(spaceID string, asset *Asset) error <span class="cov0" title="0">{
+        bytesArray, err := json.Marshal(asset)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">var path string
+        var method string
+
+        if asset.Sys.CreatedAt != "" </span><span class="cov0" title="0">{
+                path = fmt.Sprintf("/spaces/%s/assets/%s", spaceID, asset.Sys.ID)
+                method = "PUT"
+        }</span> else<span class="cov0" title="0"> {
+                path = fmt.Sprintf("/spaces/%s/assets", spaceID)
+                method = "POST"
+        }</span>
+
+        <span class="cov0" title="0">req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">req.Header.Set("X-Contentful-Version", strconv.Itoa(asset.GetVersion()))
+
+        return service.c.do(req, asset)</span>
+}
+
+// Delete sends delete request
+func (service *AssetsService) Delete(spaceID string, asset *Asset) error <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/assets/%s", spaceID, asset.Sys.ID)
+        method := "DELETE"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">version := strconv.Itoa(asset.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, nil)</span>
+}
+
+// Process the asset
+func (service *AssetsService) Process(spaceID string, asset *Asset) error <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/assets/%s/files/%s/process", spaceID, asset.Sys.ID, asset.locale)
+        method := "PUT"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">version := strconv.Itoa(asset.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, nil)</span>
+}
+
+// Publish published the asset
+func (service *AssetsService) Publish(spaceID string, asset *Asset) error <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/assets/%s/published", spaceID, asset.Sys.ID)
+        method := "PUT"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">version := strconv.Itoa(asset.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, asset)</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package contentful
+
+import (
+        "bytes"
+        "encoding/json"
+        "net/http"
+)
+
+// CollectionOptions holds init options
+type CollectionOptions struct {
+        Limit uint16
+}
+
+// Collection model
+type Collection struct {
+        Query
+        c        *Client
+        req      *http.Request
+        page     uint16
+        Sys      *Sys          `json:"sys"`
+        Total    int           `json:"total"`
+        Skip     int           `json:"skip"`
+        Limit    int           `json:"limit"`
+        Items    []interface{} `json:"items"`
+        Includes interface{}   `json:"includes"`
+}
+
+// NewCollection initilazies a new collection
+func NewCollection(options *CollectionOptions) *Collection <span class="cov8" title="4">{
+        query := NewQuery()
+        query.Order("sys.createdAt", true)
+
+        if options.Limit &gt; 0 </span><span class="cov0" title="0">{
+                query.Limit(options.Limit)
+        }</span>
+
+        <span class="cov8" title="4">return &amp;Collection{
+                Query: *query,
+                page:  1,
+        }</span>
+}
+
+// Next makes the col.req
+func (col *Collection) Next() (*Collection, error) <span class="cov10" title="5">{
+        // setup query params
+        skip := uint16(col.Limit) * (col.page - 1)
+        col.Query.Skip(skip)
+
+        // override request query
+        col.req.URL.RawQuery = col.Query.String()
+
+        // makes api call
+        err := col.c.do(col.req, col)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov10" title="5">col.page++
+
+        return col, nil</span>
+}
+
+// ToContentType cast Items to ContentType model
+func (col *Collection) ToContentType() []*ContentType <span class="cov0" title="0">{
+        var contentTypes []*ContentType
+
+        byteArray, _ := json.Marshal(col.Items)
+        json.NewDecoder(bytes.NewReader(byteArray)).Decode(&amp;contentTypes)
+
+        return contentTypes
+}</span>
+
+// ToSpace cast Items to Space model
+func (col *Collection) ToSpace() []*Space <span class="cov1" title="1">{
+        var spaces []*Space
+
+        byteArray, _ := json.Marshal(col.Items)
+        json.NewDecoder(bytes.NewReader(byteArray)).Decode(&amp;spaces)
+
+        return spaces
+}</span>
+
+// ToEntry cast Items to Entry model
+func (col *Collection) ToEntry() []*Entry <span class="cov0" title="0">{
+        var entries []*Entry
+
+        byteArray, _ := json.Marshal(col.Items)
+        json.NewDecoder(bytes.NewReader(byteArray)).Decode(&amp;entries)
+
+        return entries
+}</span>
+
+// ToLocale cast Items to Locale model
+func (col *Collection) ToLocale() []*Locale <span class="cov0" title="0">{
+        var locales []*Locale
+
+        byteArray, _ := json.Marshal(col.Items)
+        json.NewDecoder(bytes.NewReader(byteArray)).Decode(&amp;locales)
+
+        return locales
+}</span>
+
+// ToAsset cast Items to Asset model
+func (col *Collection) ToAsset() []*Asset <span class="cov0" title="0">{
+        var assets []*Asset
+
+        byteArray, _ := json.Marshal(col.Items)
+        json.NewDecoder(bytes.NewReader(byteArray)).Decode(&amp;assets)
+
+        return assets
+}</span>
+
+// ToAPIKey cast Items to APIKey model
+func (col *Collection) ToAPIKey() []*APIKey <span class="cov0" title="0">{
+        var apiKeys []*APIKey
+
+        byteArray, _ := json.Marshal(col.Items)
+        json.NewDecoder(bytes.NewReader(byteArray)).Decode(&amp;apiKeys)
+
+        return apiKeys
+}</span>
+
+// ToWebhook cast Items to Webhook model
+func (col *Collection) ToWebhook() []*Webhook <span class="cov0" title="0">{
+        var webhooks []*Webhook
+
+        byteArray, _ := json.Marshal(col.Items)
+        json.NewDecoder(bytes.NewReader(byteArray)).Decode(&amp;webhooks)
+
+        return webhooks
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package contentful
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "strconv"
+)
+
+// ContentTypesService service
+type ContentTypesService service
+
+// ContentType model
+type ContentType struct {
+        Sys          *Sys     `json:"sys"`
+        Name         string   `json:"name,omitempty"`
+        Description  string   `json:"description,omitempty"`
+        Fields       []*Field `json:"fields,omitempty"`
+        DisplayField string   `json:"displayField,omitempty"`
+}
+
+const (
+        // FieldTypeText content type field type for text data
+        FieldTypeText = "Text"
+
+        // FieldTypeSymbol content type field type for text data
+        FieldTypeSymbol = "Symbol"
+
+        // FieldTypeArray content type field type for array data
+        FieldTypeArray = "Array"
+
+        // FieldTypeLink content type field type for link data
+        FieldTypeLink = "Link"
+
+        // FieldTypeInteger content type field type for integer data
+        FieldTypeInteger = "Integer"
+
+        // FieldTypeLocation content type field type for location data
+        FieldTypeLocation = "Location"
+
+        // FieldTypeBoolean content type field type for boolean data
+        FieldTypeBoolean = "Boolean"
+
+        // FieldTypeDate content type field type for date data
+        FieldTypeDate = "Date"
+
+        // FieldTypeObject content type field type for object data
+        FieldTypeObject = "Object"
+)
+
+// Field model
+type Field struct {
+        ID          string              `json:"id,omitempty"`
+        Name        string              `json:"name"`
+        Type        string              `json:"type"`
+        LinkType    string              `json:"linkType,omitempty"`
+        Items       *FieldTypeArrayItem `json:"items,omitempty"`
+        Required    bool                `json:"required,omitempty"`
+        Localized   bool                `json:"localized,omitempty"`
+        Disabled    bool                `json:"disabled,omitempty"`
+        Omitted     bool                `json:"omitted,omitempty"`
+        Validations []FieldValidation   `json:"validations,omitempty"`
+}
+
+// UnmarshalJSON for custom json unmarshaling
+func (field *Field) UnmarshalJSON(data []byte) error <span class="cov9" title="45">{
+        payload := map[string]interface{}{}
+        if err := json.Unmarshal(data, &amp;payload); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov9" title="45">if val, ok := payload["id"]; ok </span><span class="cov9" title="45">{
+                field.ID = val.(string)
+        }</span>
+
+        <span class="cov9" title="45">if val, ok := payload["name"]; ok </span><span class="cov9" title="45">{
+                field.Name = val.(string)
+        }</span>
+
+        <span class="cov9" title="45">if val, ok := payload["type"]; ok </span><span class="cov9" title="45">{
+                field.Type = val.(string)
+        }</span>
+
+        <span class="cov9" title="45">if val, ok := payload["linkType"]; ok </span><span class="cov2" title="2">{
+                field.LinkType = val.(string)
+        }</span>
+
+        <span class="cov9" title="45">if val, ok := payload["items"]; ok </span><span class="cov2" title="2">{
+                byteArray, err := json.Marshal(val)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil
+                }</span>
+
+                <span class="cov2" title="2">var fieldTypeArrayItem FieldTypeArrayItem
+                if err := json.Unmarshal(byteArray, &amp;fieldTypeArrayItem); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov2" title="2">field.Items = &amp;fieldTypeArrayItem</span>
+        }
+
+        <span class="cov9" title="45">if val, ok := payload["required"]; ok </span><span class="cov9" title="45">{
+                field.Required = val.(bool)
+        }</span>
+
+        <span class="cov9" title="45">if val, ok := payload["localized"]; ok </span><span class="cov9" title="34">{
+                field.Localized = val.(bool)
+        }</span>
+
+        <span class="cov9" title="45">if val, ok := payload["disabled"]; ok </span><span class="cov9" title="34">{
+                field.Disabled = val.(bool)
+        }</span>
+
+        <span class="cov9" title="45">if val, ok := payload["omitted"]; ok </span><span class="cov9" title="34">{
+                field.Omitted = val.(bool)
+        }</span>
+
+        <span class="cov9" title="45">if val, ok := payload["validations"]; ok </span><span class="cov9" title="45">{
+                validations, err := ParseValidations(val.([]interface{}))
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov9" title="45">field.Validations = validations</span>
+        }
+
+        <span class="cov9" title="45">return nil</span>
+}
+
+// ParseValidations converts json representation to go struct
+func ParseValidations(data []interface{}) (validations []FieldValidation, err error) <span class="cov10" title="47">{
+        for _, value := range data </span><span class="cov8" title="25">{
+                var validation map[string]interface{}
+                var byteArray []byte
+
+                if validationStr, ok := value.(string); ok </span><span class="cov0" title="0">{
+                        if err := json.Unmarshal([]byte(validationStr), &amp;validation); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov0" title="0">byteArray = []byte(validationStr)</span>
+                }
+
+                <span class="cov8" title="25">if validationMap, ok := value.(map[string]interface{}); ok </span><span class="cov8" title="25">{
+                        byteArray, err = json.Marshal(validationMap)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov8" title="25">validation = validationMap</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["linkContentType"]; ok </span><span class="cov2" title="2">{
+                        var fieldValidationLink FieldValidationLink
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationLink); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov2" title="2">validations = append(validations, fieldValidationLink)</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["linkMimetypeGroup"]; ok </span><span class="cov2" title="2">{
+                        var fieldValidationMimeType FieldValidationMimeType
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationMimeType); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov2" title="2">validations = append(validations, fieldValidationMimeType)</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["assetImageDimensions"]; ok </span><span class="cov2" title="2">{
+                        var fieldValidationDimension FieldValidationDimension
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationDimension); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov2" title="2">validations = append(validations, fieldValidationDimension)</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["assetFileSize"]; ok </span><span class="cov2" title="2">{
+                        var fieldValidationFileSize FieldValidationFileSize
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationFileSize); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov2" title="2">validations = append(validations, fieldValidationFileSize)</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["unique"]; ok </span><span class="cov3" title="3">{
+                        var fieldValidationUnique FieldValidationUnique
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationUnique); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov3" title="3">validations = append(validations, fieldValidationUnique)</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["in"]; ok </span><span class="cov4" title="4">{
+                        var fieldValidationPredefinedValues FieldValidationPredefinedValues
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationPredefinedValues); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov4" title="4">validations = append(validations, fieldValidationPredefinedValues)</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["range"]; ok </span><span class="cov2" title="2">{
+                        var fieldValidationRange FieldValidationRange
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationRange); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov2" title="2">validations = append(validations, fieldValidationRange)</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["dateRange"]; ok </span><span class="cov1" title="1">{
+                        var fieldValidationDate FieldValidationDate
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationDate); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov1" title="1">validations = append(validations, fieldValidationDate)</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["size"]; ok </span><span class="cov4" title="5">{
+                        var fieldValidationSize FieldValidationSize
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationSize); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov4" title="5">validations = append(validations, fieldValidationSize)</span>
+                }
+
+                <span class="cov8" title="25">if _, ok := validation["regexp"]; ok </span><span class="cov2" title="2">{
+                        var fieldValidationRegex FieldValidationRegex
+                        if err := json.Unmarshal(byteArray, &amp;fieldValidationRegex); err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+
+                        <span class="cov2" title="2">validations = append(validations, fieldValidationRegex)</span>
+                }
+        }
+
+        <span class="cov10" title="47">return validations, nil</span>
+}
+
+// FieldTypeArrayItem model
+type FieldTypeArrayItem struct {
+        Type        string            `json:"type,omitempty"`
+        Validations []FieldValidation `json:"validations,omitempty"`
+        LinkType    string            `json:"linkType,omitempty"`
+}
+
+// UnmarshalJSON for custom json unmarshaling
+func (item *FieldTypeArrayItem) UnmarshalJSON(data []byte) error <span class="cov2" title="2">{
+        payload := map[string]interface{}{}
+        if err := json.Unmarshal(data, &amp;payload); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov2" title="2">if val, ok := payload["type"]; ok </span><span class="cov2" title="2">{
+                item.Type = val.(string)
+        }</span>
+
+        <span class="cov2" title="2">if val, ok := payload["validations"]; ok </span><span class="cov2" title="2">{
+                validations, err := ParseValidations(val.([]interface{}))
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov2" title="2">item.Validations = validations</span>
+        }
+
+        <span class="cov2" title="2">if val, ok := payload["linktype"]; ok </span><span class="cov0" title="0">{
+                item.LinkType = val.(string)
+        }</span>
+
+        <span class="cov2" title="2">return nil</span>
+}
+
+// GetVersion returns entity version
+func (ct *ContentType) GetVersion() int <span class="cov5" title="8">{
+        version := 1
+        if ct.Sys != nil </span><span class="cov3" title="3">{
+                version = ct.Sys.Version
+        }</span>
+
+        <span class="cov5" title="8">return version</span>
+}
+
+// List return a content type collection
+func (service *ContentTypesService) List(spaceID string) *Collection <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s/content_types", spaceID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov1" title="1">col := NewCollection(&amp;CollectionOptions{})
+        col.c = service.c
+        col.req = req
+
+        return col</span>
+}
+
+// Get fetched a content type specified by `contentTypeID`
+func (service *ContentTypesService) Get(spaceID, contentTypeID string) (*ContentType, error) <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, contentTypeID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov1" title="1">var ct ContentType
+        if err = service.c.do(req, &amp;ct); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov1" title="1">return &amp;ct, nil</span>
+}
+
+// Upsert updates or creates a new content type
+func (service *ContentTypesService) Upsert(spaceID string, ct *ContentType) error <span class="cov5" title="8">{
+        bytesArray, err := json.Marshal(ct)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov5" title="8">var path string
+        var method string
+
+        if ct.Sys != nil &amp;&amp; ct.Sys.ID != "" </span><span class="cov2" title="2">{
+                path = fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, ct.Sys.ID)
+                method = "PUT"
+        }</span> else<span class="cov5" title="6"> {
+                path = fmt.Sprintf("/spaces/%s/content_types", spaceID)
+                method = "POST"
+        }</span>
+
+        <span class="cov5" title="8">req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov5" title="8">req.Header.Set("X-Contentful-Version", strconv.Itoa(ct.GetVersion()))
+
+        return service.c.do(req, ct)</span>
+}
+
+// Delete the content_type
+func (service *ContentTypesService) Delete(spaceID string, ct *ContentType) error <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s/content_types/%s", spaceID, ct.Sys.ID)
+        method := "DELETE"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov1" title="1">version := strconv.Itoa(ct.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, nil)</span>
+}
+
+// Activate the contenttype, a.k.a publish
+func (service *ContentTypesService) Activate(spaceID string, ct *ContentType) error <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s/content_types/%s/published", spaceID, ct.Sys.ID)
+        method := "PUT"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov1" title="1">version := strconv.Itoa(ct.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, ct)</span>
+}
+
+// Deactivate the contenttype, a.k.a unpublish
+func (service *ContentTypesService) Deactivate(spaceID string, ct *ContentType) error <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s/content_types/%s/published", spaceID, ct.Sys.ID)
+        method := "DELETE"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov1" title="1">version := strconv.Itoa(ct.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, ct)</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package contentful
+
+import (
+        "encoding/json"
+        "time"
+)
+
+// FieldValidation interface
+type FieldValidation interface{}
+
+// FieldValidationLink model
+type FieldValidationLink struct {
+        LinkContentType []string `json:"linkContentType,omitempty"`
+}
+
+const (
+        // MimeTypeAttachment mime type validation for content type field
+        MimeTypeAttachment = "attachment"
+
+        // MimeTypePlainText mime type validation for content type field
+        MimeTypePlainText = "plaintext"
+
+        // MimeTypeImage mime type validation for content type field
+        MimeTypeImage = "image"
+
+        // MimeTypeAudio mime type validation for content type field
+        MimeTypeAudio = "audio"
+
+        // MimeTypeVideo mime type validation for content type field
+        MimeTypeVideo = "video"
+
+        // MimeTypeRichText mime type validation for content type field
+        MimeTypeRichText = "richtext"
+
+        // MimeTypePresentation mime type validation for content type field
+        MimeTypePresentation = "presentation"
+
+        // MimeTypeSpreadSheet mime type validation for content type field
+        MimeTypeSpreadSheet = "spreadsheet"
+
+        // MimeTypePDF mime type validation for content type field
+        MimeTypePDF = "pdfdocument"
+
+        // MimeTypeArchive mime type validation for content type field
+        MimeTypeArchive = "archive"
+
+        // MimeTypeCode mime type validation for content type field
+        MimeTypeCode = "code"
+
+        // MimeTypeMarkup mime type validation for content type field
+        MimeTypeMarkup = "markup"
+)
+
+// FieldValidationMimeType model
+type FieldValidationMimeType struct {
+        MimeTypes []string `json:"linkMimetypeGroup,omitempty"`
+}
+
+// MinMax model
+type MinMax struct {
+        Min float64 `json:"min,omitempty"`
+        Max float64 `json:"max,omitempty"`
+}
+
+// DateMinMax model
+type DateMinMax struct {
+        Min time.Time `json:"min,omitempty"`
+        Max time.Time `json:"max,omitempty"`
+}
+
+// FieldValidationDimension model
+type FieldValidationDimension struct {
+        Width        *MinMax `json:"width,omitempty"`
+        Height       *MinMax `json:"height,omitempty"`
+        ErrorMessage string  `json:"message,omitempty"`
+}
+
+// MarshalJSON for custom json marshaling
+func (v *FieldValidationDimension) MarshalJSON() ([]byte, error) <span class="cov1" title="1">{
+        type dimension struct {
+                Width  *MinMax `json:"width,omitempty"`
+                Height *MinMax `json:"height,omitempty"`
+        }
+
+        return json.Marshal(&amp;struct {
+                AssetImageDimensions *dimension `json:"assetImageDimensions,omitempty"`
+                Message              string     `json:"message,omitempty"`
+        }{
+                AssetImageDimensions: &amp;dimension{
+                        Width:  v.Width,
+                        Height: v.Height,
+                },
+                Message: v.ErrorMessage,
+        })
+}</span>
+
+// UnmarshalJSON for custom json unmarshaling
+func (v *FieldValidationDimension) UnmarshalJSON(data []byte) error <span class="cov10" title="2">{
+        payload := map[string]interface{}{}
+        if err := json.Unmarshal(data, &amp;payload); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov10" title="2">dimensionData := payload["assetImageDimensions"].(map[string]interface{})
+
+        if width, ok := dimensionData["width"].(map[string]interface{}); ok </span><span class="cov10" title="2">{
+                v.Width = &amp;MinMax{}
+
+                if min, ok := width["min"].(float64); ok </span><span class="cov10" title="2">{
+                        v.Width.Min = min
+                }</span>
+
+                <span class="cov10" title="2">if max, ok := width["min"].(float64); ok </span><span class="cov10" title="2">{
+                        v.Width.Max = max
+                }</span>
+        }
+
+        <span class="cov10" title="2">if height, ok := dimensionData["height"].(map[string]interface{}); ok </span><span class="cov10" title="2">{
+                v.Height = &amp;MinMax{}
+
+                if min, ok := height["min"].(float64); ok </span><span class="cov10" title="2">{
+                        v.Height.Min = min
+                }</span>
+
+                <span class="cov10" title="2">if max, ok := height["max"].(float64); ok </span><span class="cov10" title="2">{
+                        v.Height.Max = max
+                }</span>
+        }
+
+        <span class="cov10" title="2">if val, ok := payload["message"].(string); ok </span><span class="cov10" title="2">{
+                v.ErrorMessage = val
+        }</span>
+
+        <span class="cov10" title="2">return nil</span>
+}
+
+// FieldValidationFileSize model
+type FieldValidationFileSize struct {
+        Size         *MinMax `json:"assetFileSize,omitempty"`
+        ErrorMessage string  `json:"message,omitempty"`
+}
+
+// FieldValidationUnique model
+type FieldValidationUnique struct {
+        Unique bool `json:"unique"`
+}
+
+// FieldValidationPredefinedValues model
+type FieldValidationPredefinedValues struct {
+        In           []interface{} `json:"in,omitempty"`
+        ErrorMessage string        `json:"message"`
+}
+
+// FieldValidationRange model
+type FieldValidationRange struct {
+        Range        *MinMax `json:"range,omitempty"`
+        ErrorMessage string  `json:"message,omitempty"`
+}
+
+// FieldValidationDate model
+type FieldValidationDate struct {
+        Range        *DateMinMax `json:"dateRange,omitempty"`
+        ErrorMessage string      `json:"message,omitempty"`
+}
+
+// MarshalJSON for custom json marshaling
+func (v *FieldValidationDate) MarshalJSON() ([]byte, error) <span class="cov1" title="1">{
+        type dateRange struct {
+                Min string `json:"min,omitempty"`
+                Max string `json:"max,omitempty"`
+        }
+
+        return json.Marshal(&amp;struct {
+                DateRange *dateRange `json:"dateRange,omitempty"`
+                Message   string     `json:"message,omitempty"`
+        }{
+                DateRange: &amp;dateRange{
+                        Min: v.Range.Max.Format("2006-01-02T03:04:05"),
+                        Max: v.Range.Max.Format("2006-01-02T03:04:05"),
+                },
+                Message: v.ErrorMessage,
+        })
+}</span>
+
+// UnmarshalJSON for custom json unmarshaling
+func (v *FieldValidationDate) UnmarshalJSON(data []byte) error <span class="cov10" title="2">{
+        payload := map[string]interface{}{}
+        if err := json.Unmarshal(data, &amp;payload); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov10" title="2">dateRangeData := payload["dateRange"].(map[string]interface{})
+
+        v.Range = &amp;DateMinMax{}
+
+        if min, ok := dateRangeData["min"].(string); ok </span><span class="cov10" title="2">{
+                minDate, err := time.Parse("2006-01-02T03:04:05", min)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov10" title="2">v.Range.Min = minDate</span>
+        }
+
+        <span class="cov10" title="2">if max, ok := dateRangeData["max"].(string); ok </span><span class="cov10" title="2">{
+                maxDate, err := time.Parse("2006-01-02T03:04:05", max)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov10" title="2">v.Range.Max = maxDate</span>
+        }
+
+        <span class="cov10" title="2">if val, ok := payload["message"].(string); ok </span><span class="cov10" title="2">{
+                v.ErrorMessage = val
+        }</span>
+
+        <span class="cov10" title="2">return nil</span>
+}
+
+// FieldValidationSize model
+type FieldValidationSize struct {
+        Size         *MinMax `json:"size,omitempty"`
+        ErrorMessage string  `json:"message,omitempty"`
+}
+
+const (
+        // FieldValidationRegexPatternEmail email validation
+        FieldValidationRegexPatternEmail = `^\w[\w.-]*@([\w-]+\.)+[\w-]+$`
+
+        // FieldValidationRegexPatternURL url validation
+        FieldValidationRegexPatternURL = `^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&amp;%@!\-\/]))?$`
+
+        // FieldValidationRegexPatternUSDate us date validation
+        FieldValidationRegexPatternUSDate = `^(0?[1-9]|[12][0-9]|3[01])[- \/.](0?[1-9]|1[012])[- \/.](19|20)?\d\d$`
+
+        // FieldValidationRegexPatternEuorpeanDate euorpean date validation
+        FieldValidationRegexPatternEuorpeanDate = `^(0?[1-9]|[12][0-9]|3[01])[- \/.](0?[1-9]|1[012])[- \/.](19|20)?\d\d$`
+
+        // FieldValidationRegexPattern12HourTime 12-hour time validation
+        FieldValidationRegexPattern12HourTime = `^(0?[1-9]|1[012]):[0-5][0-9](:[0-5][0-9])?\s*[aApP][mM]$`
+
+        // FieldValidationRegexPattern24HourTime 24-hour time validation
+        FieldValidationRegexPattern24HourTime = `^(0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$`
+
+        // FieldValidationRegexPatternUSPhoneNumber us phone number validation
+        FieldValidationRegexPatternUSPhoneNumber = `^\d[ -.]?\(?\d\d\d\)?[ -.]?\d\d\d[ -.]?\d\d\d\d$`
+
+        // FieldValidationRegexPatternUSZipCode us zip code validation
+        FieldValidationRegexPatternUSZipCode = `^\d{5}$|^\d{5}-\d{4}$}`
+)
+
+// Regex model
+type Regex struct {
+        Pattern string `json:"pattern,omitempty"`
+        Flags   string `json:"flags,omitempty"`
+}
+
+// FieldValidationRegex model
+type FieldValidationRegex struct {
+        Regex        *Regex `json:"regexp,omitempty"`
+        ErrorMessage string `json:"message,omitempty"`
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package contentful
+
+import (
+        "encoding/json"
+        "fmt"
+        "io"
+        "log"
+        "net/http"
+        "net/http/httputil"
+        "net/url"
+        "strconv"
+        "time"
+
+        "moul.io/http2curl"
+)
+
+// Client model
+type Client struct {
+        client        *http.Client
+        api           string
+        token         string
+        Debug         bool
+        QueryParams   map[string]string
+        Headers       map[string]string
+        BaseURL       string
+        Environment   string
+        commonService service
+
+        Spaces       *SpacesService
+        APIKeys      *APIKeyService
+        Assets       *AssetsService
+        ContentTypes *ContentTypesService
+        Entries      *EntriesService
+        Locales      *LocalesService
+        Webhooks     *WebhooksService
+}
+
+type service struct {
+        c *Client
+}
+
+// NewCMA returns a CMA client
+func NewCMA(token string) *Client <span class="cov8" title="37">{
+        c := &amp;Client{
+                client: http.DefaultClient,
+                api:    "CMA",
+                token:  token,
+                Debug:  false,
+                Headers: map[string]string{
+                        "Authorization":           fmt.Sprintf("Bearer %s", token),
+                        "Content-Type":            "application/vnd.contentful.management.v1+json",
+                        "X-Contentful-User-Agent": fmt.Sprintf("sdk contentful-go/%s", Version),
+                },
+                BaseURL:     "https://api.contentful.com",
+                Environment: "master",
+        }
+        c.commonService.c = c
+
+        c.Spaces = (*SpacesService)(&amp;c.commonService)
+        c.APIKeys = (*APIKeyService)(&amp;c.commonService)
+        c.Assets = (*AssetsService)(&amp;c.commonService)
+        c.ContentTypes = (*ContentTypesService)(&amp;c.commonService)
+        c.Entries = (*EntriesService)(&amp;c.commonService)
+        c.Locales = (*LocalesService)(&amp;c.commonService)
+        c.Webhooks = (*WebhooksService)(&amp;c.commonService)
+        return c
+}</span>
+
+// NewCDA returns a CDA client
+func NewCDA(token string) *Client <span class="cov1" title="1">{
+        c := &amp;Client{
+                client: http.DefaultClient,
+                api:    "CDA",
+                token:  token,
+                Debug:  false,
+                Headers: map[string]string{
+                        "Authorization":           "Bearer " + token,
+                        "Content-Type":            "application/vnd.contentful.delivery.v1+json",
+                        "X-Contentful-User-Agent": fmt.Sprintf("sdk contentful-go/%s", Version),
+                },
+                BaseURL:     "https://cdn.contentful.com",
+                Environment: "master",
+        }
+        c.commonService.c = c
+
+        c.Spaces = (*SpacesService)(&amp;c.commonService)
+        c.APIKeys = (*APIKeyService)(&amp;c.commonService)
+        c.Assets = (*AssetsService)(&amp;c.commonService)
+        c.ContentTypes = (*ContentTypesService)(&amp;c.commonService)
+        c.Entries = (*EntriesService)(&amp;c.commonService)
+        c.Locales = (*LocalesService)(&amp;c.commonService)
+        c.Webhooks = (*WebhooksService)(&amp;c.commonService)
+
+        return c
+}</span>
+
+// NewCPA returns a CPA client
+func NewCPA(token string) *Client <span class="cov1" title="1">{
+        c := &amp;Client{
+                client: http.DefaultClient,
+                Debug:  false,
+                api:    "CPA",
+                token:  token,
+                Headers: map[string]string{
+                        "Authorization": "Bearer " + token,
+                },
+                BaseURL: "https://preview.contentful.com",
+        }
+
+        c.Spaces = &amp;SpacesService{c: c}
+        c.APIKeys = &amp;APIKeyService{c: c}
+        c.Assets = &amp;AssetsService{c: c}
+        c.ContentTypes = &amp;ContentTypesService{c: c}
+        c.Entries = &amp;EntriesService{c: c}
+        c.Locales = &amp;LocalesService{c: c}
+        c.Webhooks = &amp;WebhooksService{c: c}
+
+        return c
+}</span>
+
+// SetOrganization sets the given organization id
+func (c *Client) SetOrganization(organizationID string) *Client <span class="cov1" title="1">{
+        c.Headers["X-Contentful-Organization"] = organizationID
+
+        return c
+}</span>
+
+// SetEnvironment sets the given environment.
+// https://www.contentful.com/developers/docs/references/content-management-api/#/reference/environments
+func (c *Client) SetEnvironment(environment string) *Client <span class="cov0" title="0">{
+        c.Environment = environment
+        return c
+}</span>
+
+// SetHTTPClient sets the underlying http.Client used to make requests.
+func (c *Client) SetHTTPClient(client *http.Client) <span class="cov1" title="1">{
+        c.client = client
+}</span>
+
+func (c *Client) newRequest(method, path string, query url.Values, body io.Reader) (*http.Request, error) <span class="cov7" title="34">{
+        u, err := url.Parse(c.BaseURL)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // set query params
+        <span class="cov7" title="34">for key, value := range c.QueryParams </span><span class="cov0" title="0">{
+                query.Set(key, value)
+        }</span>
+
+        <span class="cov7" title="34">u.Path = path
+        u.RawQuery = query.Encode()
+
+        req, err := http.NewRequest(method, u.String(), body)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // set headers
+        <span class="cov7" title="34">for key, value := range c.Headers </span><span class="cov10" title="102">{
+                req.Header.Set(key, value)
+        }</span>
+
+        <span class="cov7" title="34">return req, nil</span>
+}
+
+func (c *Client) do(req *http.Request, v interface{}) error <span class="cov7" title="34">{
+        if c.Debug == true </span><span class="cov0" title="0">{
+                command, _ := http2curl.GetCurlCommand(req)
+                fmt.Println(command)
+        }</span>
+
+        <span class="cov7" title="34">res, err := c.client.Do(req)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov7" title="34">if res.StatusCode &gt;= 200 &amp;&amp; res.StatusCode &lt; 400 </span><span class="cov7" title="30">{
+                if v != nil </span><span class="cov7" title="26">{
+                        defer res.Body.Close()
+                        err = json.NewDecoder(res.Body).Decode(v)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                }
+
+                <span class="cov7" title="30">return nil</span>
+        }
+
+        // parse api response
+        <span class="cov3" title="4">apiError := c.handleError(req, res)
+
+        // return apiError if it is not rate limit error
+        if _, ok := apiError.(RateLimitExceededError); !ok </span><span class="cov1" title="1">{
+                return apiError
+        }</span>
+
+        <span class="cov3" title="3">resetHeader := res.Header.Get("x-contentful-ratelimit-reset")
+
+        // return apiError if Ratelimit-Reset header is not presented
+        if resetHeader == "" </span><span class="cov1" title="1">{
+                return apiError
+        }</span>
+
+        // wait X-Contentful-Ratelimit-Reset amount of seconds
+        <span class="cov2" title="2">waitSeconds, err := strconv.Atoi(resetHeader)
+        if err != nil </span><span class="cov0" title="0">{
+                return apiError
+        }</span>
+
+        <span class="cov2" title="2">time.Sleep(time.Second * time.Duration(waitSeconds))
+
+        return c.do(req, v)</span>
+}
+
+func (c *Client) handleError(req *http.Request, res *http.Response) error <span class="cov4" title="5">{
+        if c.Debug == true </span><span class="cov0" title="0">{
+                dump, err := httputil.DumpResponse(res, true)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Fatal(err)
+                }</span>
+
+                <span class="cov0" title="0">fmt.Printf("%q", dump)</span>
+        }
+
+        <span class="cov4" title="5">var e ErrorResponse
+        defer res.Body.Close()
+        err := json.NewDecoder(res.Body).Decode(&amp;e)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov4" title="5">apiError := APIError{
+                req: req,
+                res: res,
+                err: &amp;e,
+        }
+
+        switch errType := e.Sys.ID; errType </span>{
+        case "NotFound":<span class="cov1" title="1">
+                return NotFoundError{apiError}</span>
+        case "RateLimitExceeded":<span class="cov3" title="3">
+                return RateLimitExceededError{apiError}</span>
+        case "AccessTokenInvalid":<span class="cov1" title="1">
+                return AccessTokenInvalidError{apiError}</span>
+        case "ValidationFailed":<span class="cov0" title="0">
+                return ValidationFailedError{apiError}</span>
+        case "VersionMismatch":<span class="cov0" title="0">
+                return VersionMismatchError{apiError}</span>
+        case "Conflict":<span class="cov0" title="0">
+                return VersionMismatchError{apiError}</span>
+        default:<span class="cov0" title="0">
+                return e</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package contentful
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "net/http"
+        "net/url"
+        "strconv"
+)
+
+// EntriesService service
+type EntriesService service
+
+//Entry model
+type Entry struct {
+        locale string
+        Sys    *Sys `json:"sys"`
+        Fields map[string]interface{}
+}
+
+// GetVersion returns entity version
+func (entry *Entry) GetVersion() int <span class="cov0" title="0">{
+        version := 1
+        if entry.Sys != nil </span><span class="cov0" title="0">{
+                version = entry.Sys.Version
+        }</span>
+
+        <span class="cov0" title="0">return version</span>
+}
+
+// GetEntryKey returns the entry's keys
+func (service *EntriesService) GetEntryKey(entry *Entry, key string) (*EntryField, error) <span class="cov0" title="0">{
+        ef := EntryField{
+                value: entry.Fields[key],
+        }
+
+        col, err := service.c.ContentTypes.List(entry.Sys.Space.Sys.ID).Next()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">for _, ct := range col.ToContentType() </span><span class="cov0" title="0">{
+                if ct.Sys.ID != entry.Sys.ContentType.Sys.ID </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">for _, field := range ct.Fields </span><span class="cov0" title="0">{
+                        if field.ID != key </span><span class="cov0" title="0">{
+                                continue</span>
+                        }
+
+                        <span class="cov0" title="0">ef.dataType = field.Type</span>
+                }
+        }
+
+        <span class="cov0" title="0">return &amp;ef, nil</span>
+}
+
+// List returns entries collection
+func (service *EntriesService) List(spaceID string) *Collection <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/environments/%s/entries", spaceID, service.c.Environment)
+
+        req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;Collection{}
+        }</span>
+
+        <span class="cov0" title="0">col := NewCollection(&amp;CollectionOptions{})
+        col.c = service.c
+        col.req = req
+        
+        return col</span>
+}
+
+// Get returns a single entry
+func (service *EntriesService) Get(spaceID, entryID string) (*Entry, error) <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/entries/%s", spaceID, entryID)
+        query := url.Values{}
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, query, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;Entry{}, err
+        }</span>
+
+        <span class="cov0" title="0">var entry Entry
+        if ok := service.c.do(req, &amp;entry); ok != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;entry, err</span>
+}
+
+// Upsert updates or creates a new entry
+func (service *EntriesService) Upsert(spaceID string, entry *Entry) error <span class="cov8" title="1">{
+        fields := map[string]interface{}{
+                "fields": entry.Fields,
+        }
+
+        bytesArray, err := json.Marshal(fields)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // Creating/updating an entry requires a content type to be provided
+        <span class="cov8" title="1">if entry.Sys.ContentType == nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("creating/updating an entry requires a content type")
+        }</span>
+
+        <span class="cov8" title="1">var path string
+        var method string
+
+        if entry.Sys != nil &amp;&amp; entry.Sys.CreatedAt != "" </span><span class="cov0" title="0">{
+                path = fmt.Sprintf("/spaces/%s/environments/%s/entries/%s", spaceID, service.c.Environment, entry.Sys.ID)
+                method = http.MethodPut
+        }</span> else<span class="cov8" title="1"> {
+                path = fmt.Sprintf("/spaces/%s/environments/%s/entries", spaceID, service.c.Environment)
+                method = http.MethodPost
+        }</span>
+
+        <span class="cov8" title="1">req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">version := strconv.Itoa(entry.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+        req.Header.Set("X-Contentful-Content-Type", entry.Sys.ContentType.Sys.ID)
+
+        return service.c.do(req, entry)</span>
+}
+
+// Delete the entry
+func (service *EntriesService) Delete(spaceID string, entryID string) error <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/entries/%s", spaceID, entryID)
+        method := "DELETE"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return service.c.do(req, nil)</span>
+}
+
+// Publish the entry
+func (service *EntriesService) Publish(spaceID string, entry *Entry) error <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/entries/%s/published", spaceID, entry.Sys.ID)
+        method := "PUT"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">version := strconv.Itoa(entry.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, nil)</span>
+}
+
+// Unpublish the entry
+func (service *EntriesService) Unpublish(spaceID string, entry *Entry) error <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/entries/%s/published", spaceID, entry.Sys.ID)
+        method := "DELETE"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">version := strconv.Itoa(entry.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, nil)</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package contentful
+
+import "reflect"
+
+// EntryField model
+type EntryField struct {
+        value    interface{}
+        dataType string
+}
+
+// String converts interface to string
+func (ef *EntryField) String() string <span class="cov0" title="0">{
+        return ef.value.(string)
+}</span>
+
+//LString returns the given locale
+func (ef *EntryField) LString(locale string) string <span class="cov0" title="0">{
+        m := ef.value.(map[string]interface{})
+
+        if val, ok := m[locale]; ok </span><span class="cov0" title="0">{
+                return val.(string)
+        }</span>
+
+        <span class="cov0" title="0">panic("no such a locale")</span>
+}
+
+//Integer converts interface to integer
+func (ef *EntryField) Integer() int <span class="cov0" title="0">{
+        return int(ef.value.(float64))
+}</span>
+
+//LInteger converts interface to integer
+func (ef *EntryField) LInteger(locale string) int <span class="cov0" title="0">{
+        m := ef.value.(map[string]interface{})
+
+        if val, ok := m[locale]; ok </span><span class="cov0" title="0">{
+                return int(val.(float64))
+        }</span>
+
+        <span class="cov0" title="0">panic("no such a locale")</span>
+}
+
+//Array converts interface to slice
+func (ef *EntryField) Array() []string <span class="cov0" title="0">{
+        res := []string{}
+
+        switch reflect.TypeOf(ef.value).Kind() </span>{
+        case reflect.Slice:<span class="cov0" title="0">
+                s := reflect.ValueOf(ef.value)
+
+                for i := 0; i &lt; s.Len(); i++ </span><span class="cov0" title="0">{
+                        res = append(res, s.Index(i).Interface().(string))
+                }</span>
+        }
+
+        <span class="cov0" title="0">return res</span>
+}
+
+//LArray converts interface to slice
+func (ef *EntryField) LArray(locale string) []string <span class="cov0" title="0">{
+        m := ef.value.(map[string]interface{})
+
+        if val, ok := m[locale]; ok </span><span class="cov0" title="0">{
+                res := []string{}
+
+                switch reflect.TypeOf(val).Kind() </span>{
+                case reflect.Slice:<span class="cov0" title="0">
+                        s := reflect.ValueOf(val)
+
+                        for i := 0; i &lt; s.Len(); i++ </span><span class="cov0" title="0">{
+                                res = append(res, s.Index(i).Interface().(string))
+                        }</span>
+                }
+
+                <span class="cov0" title="0">return res</span>
+        }
+
+        <span class="cov0" title="0">panic("no such a locale")</span>
+}
+
+//LinkID returns link model
+func (ef *EntryField) LinkID() string <span class="cov0" title="0">{
+        m := ef.value.(map[string]interface{})
+        sys := m["sys"].(map[string]interface{})
+        return sys["id"].(string)
+}</span>
+
+//LLinkID returns link model
+func (ef *EntryField) LLinkID(locale string) string <span class="cov0" title="0">{
+        m := ef.value.(map[string]interface{})
+
+        if val, ok := m[locale]; ok </span><span class="cov0" title="0">{
+                m := val.(map[string]interface{})
+                sys := m["sys"].(map[string]interface{})
+                return sys["id"].(string)
+        }</span>
+
+        <span class="cov0" title="0">panic("no such a locale")</span>
+}
+
+//LinkType returns link model
+func (ef *EntryField) LinkType() string <span class="cov0" title="0">{
+        m := ef.value.(map[string]interface{})
+        sys := m["sys"].(map[string]interface{})
+        return sys["linkType"].(string)
+}</span>
+
+//LLinkType returns link model
+func (ef *EntryField) LLinkType(locale string) string <span class="cov0" title="0">{
+        m := ef.value.(map[string]interface{})
+
+        if val, ok := m[locale]; ok </span><span class="cov0" title="0">{
+                m := val.(map[string]interface{})
+                sys := m["sys"].(map[string]interface{})
+                return sys["linkType"].(string)
+        }</span>
+
+        <span class="cov0" title="0">panic("no such a locale")</span>
+}
+
+//Asset returns the linked asset
+func (ef *EntryField) Asset() *Asset <span class="cov0" title="0">{
+        if ef.LinkType() != "Asset" </span><span class="cov0" title="0">{
+                panic("you can only convert asset types")</span>
+        }
+
+        // asset, _ := ef.space.GetAsset(ef.LinkID())
+        <span class="cov0" title="0">return &amp;Asset{}</span>
+}
+
+//LAsset returns the linked asset
+func (ef *EntryField) LAsset(locale string) *Asset <span class="cov0" title="0">{
+        if ef.LLinkType(locale) != "Asset" </span><span class="cov0" title="0">{
+                panic("you can only convert asset types")</span>
+        }
+
+        // asset, _ := ef.space.GetAsset(ef.LLinkID(locale))
+        <span class="cov0" title="0">return &amp;Asset{}</span>
+}
+
+//Entry returns the linked entry
+func (ef *EntryField) Entry() *Entry <span class="cov0" title="0">{
+        if ef.LinkType() != "Entry" </span><span class="cov0" title="0">{
+                panic("you can only convert entry types")</span>
+        }
+
+        // entry, _ := ef.space.GetEntries().Get(ef.LinkID())
+        <span class="cov0" title="0">return &amp;Entry{}</span>
+}
+
+//LEntry returns the linked entry
+func (ef *EntryField) LEntry(locale string) *Entry <span class="cov0" title="0">{
+        if ef.LLinkType(locale) != "Entry" </span><span class="cov0" title="0">{
+                panic("you can only convert entry types")</span>
+        }
+
+        // entry, _ := ef.space.GetEntries().Get(ef.LLinkID(locale))
+        <span class="cov0" title="0">return &amp;Entry{}</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package contentful
+
+import (
+        "bytes"
+        "fmt"
+        "net/http"
+)
+
+// ErrorResponse model
+type ErrorResponse struct {
+        Sys       *Sys          `json:"sys"`
+        Message   string        `json:"message,omitempty"`
+        RequestID string        `json:"requestId,omitempty"`
+        Details   *ErrorDetails `json:"details,omitempty"`
+}
+
+func (e ErrorResponse) Error() string <span class="cov0" title="0">{
+        return e.Message
+}</span>
+
+// ErrorDetails model
+type ErrorDetails struct {
+        Errors []*ErrorDetail `json:"errors,omitempty"`
+}
+
+// ErrorDetail model
+type ErrorDetail struct {
+        ID      string      `json:"id,omitempty"`
+        Name    string      `json:"name,omitempty"`
+        Path    interface{} `json:"path,omitempty"`
+        Details string      `json:"details,omitempty"`
+        Value   interface{} `json:"value,omitempty"`
+}
+
+// APIError model
+type APIError struct {
+        req *http.Request
+        res *http.Response
+        err *ErrorResponse
+}
+
+// AccessTokenInvalidError for 401 errors
+type AccessTokenInvalidError struct {
+        APIError
+}
+
+func (e AccessTokenInvalidError) Error() string <span class="cov0" title="0">{
+        return e.APIError.err.Message
+}</span>
+
+// VersionMismatchError for 409 errors
+type VersionMismatchError struct {
+        APIError
+}
+
+func (e VersionMismatchError) Error() string <span class="cov0" title="0">{
+        return "Version " + e.APIError.req.Header.Get("X-Contentful-Version") + " is mismatched"
+}</span>
+
+// ValidationFailedError model
+type ValidationFailedError struct {
+        APIError
+}
+
+func (e ValidationFailedError) Error() string <span class="cov0" title="0">{
+        msg := bytes.Buffer{}
+
+        for _, err := range e.APIError.err.Details.Errors </span><span class="cov0" title="0">{
+                if err.Name == "uniqueFieldIds" || err.Name == "uniqueFieldApiNames" </span><span class="cov0" title="0">{
+                        return msg.String()
+                }</span>
+                <span class="cov0" title="0">msg.WriteString(fmt.Sprintf("%s\n", err.Details))</span>
+        }
+
+        <span class="cov0" title="0">return msg.String()</span>
+}
+
+// NotFoundError for 404 errors
+type NotFoundError struct {
+        APIError
+}
+
+func (e NotFoundError) Error() string <span class="cov0" title="0">{
+        return "the requested resource can not be found"
+}</span>
+
+// RateLimitExceededError for rate limit errors
+type RateLimitExceededError struct {
+        APIError
+}
+
+func (e RateLimitExceededError) Error() string <span class="cov0" title="0">{
+        return e.APIError.err.Message
+}</span>
+
+// BadRequestError error model for bad request responses
+type BadRequestError struct{}
+
+// InvalidQueryError error model for invalid query responses
+type InvalidQueryError struct{}
+
+// AccessDeniedError error model for access denied responses
+type AccessDeniedError struct{}
+
+// ServerError error model for server error responses
+type ServerError struct{}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package contentful
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "strconv"
+)
+
+// LocalesService service
+type LocalesService service
+
+// Locale model
+type Locale struct {
+        Sys *Sys `json:"sys,omitempty"`
+
+        // Locale name
+        Name string `json:"name,omitempty"`
+
+        // Language code
+        Code string `json:"code,omitempty"`
+
+        // If no content is provided for the locale, the Delivery API will return content in a locale specified below:
+        FallbackCode string `json:"fallbackCode,omitempty"`
+
+        // Make the locale as default locale for your account
+        Default bool `json:"default,omitempty"`
+
+        // Entries with required fields can still be published if locale is empty.
+        Optional bool `json:"optional,omitempty"`
+
+        // Includes locale in the Delivery API response.
+        CDA bool `json:"contentDeliveryApi"`
+
+        // Displays locale to editors and enables it in Management API.
+        CMA bool `json:"contentManagementApi"`
+}
+
+// GetVersion returns entity version
+func (locale *Locale) GetVersion() int <span class="cov10" title="2">{
+        version := 1
+        if locale.Sys != nil </span><span class="cov1" title="1">{
+                version = locale.Sys.Version
+        }</span>
+
+        <span class="cov10" title="2">return version</span>
+}
+
+// List returns a locales collection
+func (service *LocalesService) List(spaceID string) *Collection <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s/locales", spaceID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;Collection{}
+        }</span>
+
+        <span class="cov1" title="1">col := NewCollection(&amp;CollectionOptions{})
+        col.c = service.c
+        col.req = req
+
+        return col</span>
+}
+
+// Get returns a single locale entity
+func (service *LocalesService) Get(spaceID, localeID string) (*Locale, error) <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s/locales/%s", spaceID, localeID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov1" title="1">var locale Locale
+        if err := service.c.do(req, &amp;locale); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov1" title="1">return &amp;locale, nil</span>
+}
+
+// Delete the locale
+func (service *LocalesService) Delete(spaceID string, locale *Locale) error <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s/locales/%s", spaceID, locale.Sys.ID)
+        method := "DELETE"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov1" title="1">version := strconv.Itoa(locale.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, nil)</span>
+}
+
+// Upsert updates or creates a new locale entity
+func (service *LocalesService) Upsert(spaceID string, locale *Locale) error <span class="cov10" title="2">{
+        bytesArray, err := json.Marshal(locale)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov10" title="2">var path string
+        var method string
+
+        if locale.Sys != nil &amp;&amp; locale.Sys.CreatedAt != "" </span><span class="cov1" title="1">{
+                path = fmt.Sprintf("/spaces/%s/locales/%s", spaceID, locale.Sys.ID)
+                method = "PUT"
+        }</span> else<span class="cov1" title="1"> {
+                path = fmt.Sprintf("/spaces/%s/locales", spaceID)
+                method = "POST"
+        }</span>
+
+        <span class="cov10" title="2">req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov10" title="2">req.Header.Set("X-Contentful-Version", strconv.Itoa(locale.GetVersion()))
+
+        return service.c.do(req, locale)</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package contentful
+
+import (
+        "net/url"
+        "reflect"
+        "strconv"
+        "strings"
+        "time"
+)
+
+//Query model
+type Query struct {
+        include     uint16
+        contentType string
+        fields      []string
+        e           map[string]interface{}
+        ne          map[string]interface{}
+        all         map[string][]string
+        in          map[string][]string
+        nin         map[string][]string
+        exists      []string
+        notExists   []string
+        lt          map[string]interface{}
+        lte         map[string]interface{}
+        gt          map[string]interface{}
+        gte         map[string]interface{}
+        q           string
+        match       map[string]string
+        near        map[string]string
+        within      map[string]string
+        order       []string
+        limit       uint16
+        skip        uint16
+        mime        string
+        locale      string
+}
+
+//NewQuery initilazies a new query
+func NewQuery() *Query <span class="cov9" title="39">{
+        return &amp;Query{
+                include:     0,
+                contentType: "",
+                fields:      []string{},
+                e:           make(map[string]interface{}),
+                ne:          make(map[string]interface{}),
+                all:         make(map[string][]string),
+                in:          make(map[string][]string),
+                nin:         make(map[string][]string),
+                exists:      []string{},
+                notExists:   []string{},
+                lt:          make(map[string]interface{}),
+                lte:         make(map[string]interface{}),
+                gt:          make(map[string]interface{}),
+                gte:         make(map[string]interface{}),
+                q:           "",
+                match:       make(map[string]string),
+                near:        make(map[string]string),
+                within:      make(map[string]string),
+                order:       []string{},
+                limit:       0,
+                skip:        0,
+                mime:        "",
+                locale:      "",
+        }
+}</span>
+
+//Include query
+func (q *Query) Include(include uint16) *Query <span class="cov2" title="2">{
+        q.include = include
+        return q
+}</span>
+
+//ContentType query
+func (q *Query) ContentType(ct string) *Query <span class="cov4" title="5">{
+        q.contentType = ct
+        return q
+}</span>
+
+//Select query
+func (q *Query) Select(fields []string) *Query <span class="cov4" title="4">{
+        q.fields = fields
+        return q
+}</span>
+
+//Equal equality query
+func (q *Query) Equal(field string, value interface{}) *Query <span class="cov4" title="4">{
+        q.e[field] = value
+        return q
+}</span>
+
+//NotEqual [ne] query
+func (q *Query) NotEqual(field string, value interface{}) *Query <span class="cov4" title="4">{
+        q.ne[field] = value
+        return q
+}</span>
+
+//All [all] query
+func (q *Query) All(field string, value []string) *Query <span class="cov1" title="1">{
+        q.all[field] = value
+        return q
+}</span>
+
+//In [in] query
+func (q *Query) In(field string, value []string) *Query <span class="cov2" title="2">{
+        q.in[field] = value
+        return q
+}</span>
+
+//NotIn [nin] query
+func (q *Query) NotIn(field string, value []string) *Query <span class="cov2" title="2">{
+        q.nin[field] = value
+        return q
+}</span>
+
+//Exists [exists] query
+func (q *Query) Exists(field string) *Query <span class="cov1" title="1">{
+        q.exists = append(q.exists, field)
+        return q
+}</span>
+
+//NotExists [exists] query
+func (q *Query) NotExists(field string) *Query <span class="cov1" title="1">{
+        q.notExists = append(q.notExists, field)
+        return q
+}</span>
+
+//LessThan [lt] query
+func (q *Query) LessThan(field string, value interface{}) *Query <span class="cov3" title="3">{
+        q.lt[field] = value
+        return q
+}</span>
+
+//LessThanOrEqual [lte] query
+func (q *Query) LessThanOrEqual(field string, value interface{}) *Query <span class="cov2" title="2">{
+        q.lte[field] = value
+        return q
+}</span>
+
+//GreaterThan [gt] query
+func (q *Query) GreaterThan(field string, value interface{}) *Query <span class="cov2" title="2">{
+        q.gt[field] = value
+        return q
+}</span>
+
+//GreaterThanOrEqual [lte] query
+func (q *Query) GreaterThanOrEqual(field string, value interface{}) *Query <span class="cov2" title="2">{
+        q.gte[field] = value
+        return q
+}</span>
+
+//Query param
+func (q *Query) Query(qStr string) *Query <span class="cov1" title="1">{
+        q.q = qStr
+        return q
+}</span>
+
+//Match param
+func (q *Query) Match(field, match string) *Query <span class="cov1" title="1">{
+        q.match[field] = match
+        return q
+}</span>
+
+//Near param
+func (q *Query) Near(field string, lat, lon int16) *Query <span class="cov1" title="1">{
+        q.near[field] = strconv.Itoa(int(lat)) + "," + strconv.Itoa(int(lon))
+        return q
+}</span>
+
+//Within param
+func (q *Query) Within(field string, lat1, lon1, lat2, lon2 int16) *Query <span class="cov1" title="1">{
+        q.within[field] = strconv.Itoa(int(lat1)) + "," + strconv.Itoa(int(lon1)) + "," + strconv.Itoa(int(lat2)) + "," + strconv.Itoa(int(lon2))
+        return q
+}</span>
+
+//WithinRadius param
+func (q *Query) WithinRadius(field string, lat1, lon1, radius int16) *Query <span class="cov1" title="1">{
+        q.within[field] = strconv.Itoa(int(lat1)) + "," + strconv.Itoa(int(lon1)) + "," + strconv.Itoa(int(radius))
+        return q
+}</span>
+
+//Order param
+func (q *Query) Order(field string, reverse bool) *Query <span class="cov6" title="9">{
+        if reverse </span><span class="cov5" title="6">{
+                q.order = append(q.order, "-"+field)
+        }</span> else<span class="cov3" title="3"> {
+                q.order = append(q.order, field)
+        }</span>
+
+        <span class="cov6" title="9">return q</span>
+}
+
+//Limit query
+func (q *Query) Limit(limit uint16) *Query <span class="cov2" title="2">{
+        q.limit = limit
+        return q
+}</span>
+
+//Skip query
+func (q *Query) Skip(skip uint16) *Query <span class="cov5" title="6">{
+        q.skip = skip
+        return q
+}</span>
+
+//MimeType query
+func (q *Query) MimeType(mime string) *Query <span class="cov1" title="1">{
+        q.mime = mime
+        return q
+}</span>
+
+//Locale query
+func (q *Query) Locale(locale string) *Query <span class="cov0" title="0">{
+        q.locale = locale
+        return q
+}</span>
+
+// Values constructs url.Values
+func (q *Query) Values() url.Values <span class="cov10" title="44">{
+        params := url.Values{}
+
+        if q.include != 0 </span><span class="cov2" title="2">{
+                if q.include &gt; 10 </span><span class="cov1" title="1">{
+                        panic("include value should be between 0 and 10")</span>
+                }
+
+                <span class="cov1" title="1">params.Set("include", strconv.Itoa(int(q.include)))</span>
+        }
+
+        <span class="cov9" title="43">if q.contentType != "" </span><span class="cov4" title="5">{
+                params.Set("content_type", q.contentType)
+        }</span>
+
+        <span class="cov9" title="43">if len(q.fields) &gt; 0 </span><span class="cov4" title="4">{
+                if len(q.fields) &gt; 100 </span><span class="cov1" title="1">{
+                        panic("You can select up to 100 properties for `select`")</span>
+                }
+
+                <span class="cov3" title="3">for _, sel := range q.fields </span><span class="cov5" title="7">{
+                        if len(strings.Split(sel, ".")) &gt; 2 </span><span class="cov1" title="1">{
+                                panic("you should provide at most 2 depth for `select`")</span>
+                        }
+                }
+
+                <span class="cov2" title="2">if q.contentType == "" </span><span class="cov1" title="1">{
+                        panic("you should provide content_type parameter")</span>
+                }
+
+                <span class="cov1" title="1">params.Set("select", strings.Join(q.fields, ","))</span>
+        }
+
+        <span class="cov9" title="40">for k, v := range q.e </span><span class="cov4" title="4">{
+                switch reflect.TypeOf(v).Kind() </span>{
+                case reflect.Int:<span class="cov1" title="1">
+                        </span><span class="cov1" title="1">{
+                                intV := reflect.ValueOf(v).Interface().(int)
+                                params.Set(k, strconv.Itoa(intV))
+                        }</span>
+                case reflect.String:<span class="cov2" title="2">
+                        </span><span class="cov2" title="2">{
+                                strV := reflect.ValueOf(v).Interface().(string)
+                                params.Set(k, strV)
+                        }</span>
+                }
+        }
+
+        <span class="cov9" title="40">for k, v := range q.ne </span><span class="cov4" title="4">{
+                switch reflect.TypeOf(v).Kind() </span>{
+                case reflect.Int:<span class="cov1" title="1">
+                        </span><span class="cov1" title="1">{
+                                intV := reflect.ValueOf(v).Interface().(int)
+                                params.Set(k+"[ne]", strconv.Itoa(intV))
+                        }</span>
+                case reflect.String:<span class="cov2" title="2">
+                        </span><span class="cov2" title="2">{
+                                strV := reflect.ValueOf(v).Interface().(string)
+                                params.Set(k+"[ne]", strV)
+                        }</span>
+                }
+        }
+
+        <span class="cov9" title="40">for k, v := range q.all </span><span class="cov1" title="1">{
+                params.Set(k+"[all]", strings.Join(v, ","))
+        }</span>
+
+        <span class="cov9" title="40">for k, v := range q.in </span><span class="cov2" title="2">{
+                params.Set(k+"[in]", strings.Join(v, ","))
+        }</span>
+
+        <span class="cov9" title="40">for k, v := range q.nin </span><span class="cov2" title="2">{
+                params.Set(k+"[nin]", strings.Join(v, ","))
+        }</span>
+
+        <span class="cov9" title="40">for _, v := range q.exists </span><span class="cov1" title="1">{
+                params.Set(v+"[exists]", "true")
+        }</span>
+
+        <span class="cov9" title="40">for _, v := range q.notExists </span><span class="cov1" title="1">{
+                params.Set(v+"[exists]", "false")
+        }</span>
+
+        <span class="cov9" title="40">for k, v := range q.lt </span><span class="cov3" title="3">{
+                switch reflect.TypeOf(v).Kind() </span>{
+                case reflect.Int:<span class="cov2" title="2">
+                        </span><span class="cov2" title="2">{
+                                intV := reflect.ValueOf(v).Interface().(int)
+                                params.Set(k+"[lt]", strconv.Itoa(intV))
+                        }</span>
+                case reflect.Struct:<span class="cov1" title="1">
+                        </span><span class="cov1" title="1">{
+                                timeV := reflect.ValueOf(v).Interface().(time.Time)
+                                params.Set(k+"[lt]", timeV.Format("2006-01-02 15:04:05"))
+                        }</span>
+                }
+        }
+
+        <span class="cov9" title="40">for k, v := range q.lte </span><span class="cov2" title="2">{
+                switch reflect.TypeOf(v).Kind() </span>{
+                case reflect.Int:<span class="cov1" title="1">
+                        </span><span class="cov1" title="1">{
+                                intV := reflect.ValueOf(v).Interface().(int)
+                                params.Set(k+"[lte]", strconv.Itoa(intV))
+                        }</span>
+                case reflect.Struct:<span class="cov1" title="1">
+                        </span><span class="cov1" title="1">{
+                                timeV := reflect.ValueOf(v).Interface().(time.Time)
+                                params.Set(k+"[lte]", timeV.Format("2006-01-02 15:04:05"))
+                        }</span>
+                }
+        }
+
+        <span class="cov9" title="40">for k, v := range q.gt </span><span class="cov2" title="2">{
+                switch reflect.TypeOf(v).Kind() </span>{
+                case reflect.Int:<span class="cov1" title="1">
+                        </span><span class="cov1" title="1">{
+                                intV := reflect.ValueOf(v).Interface().(int)
+                                params.Set(k+"[gt]", strconv.Itoa(intV))
+                        }</span>
+                case reflect.Struct:<span class="cov1" title="1">
+                        </span><span class="cov1" title="1">{
+                                timeV := reflect.ValueOf(v).Interface().(time.Time)
+                                params.Set(k+"[gt]", timeV.Format("2006-01-02 15:04:05"))
+                        }</span>
+                }
+        }
+
+        <span class="cov9" title="40">for k, v := range q.gte </span><span class="cov2" title="2">{
+                switch reflect.TypeOf(v).Kind() </span>{
+                case reflect.Int:<span class="cov1" title="1">
+                        </span><span class="cov1" title="1">{
+                                intV := reflect.ValueOf(v).Interface().(int)
+                                params.Set(k+"[gte]", strconv.Itoa(intV))
+                        }</span>
+                case reflect.Struct:<span class="cov1" title="1">
+                        </span><span class="cov1" title="1">{
+                                timeV := reflect.ValueOf(v).Interface().(time.Time)
+                                params.Set(k+"[gte]", timeV.Format("2006-01-02 15:04:05"))
+                        }</span>
+                }
+        }
+
+        <span class="cov9" title="40">if q.q != "" </span><span class="cov1" title="1">{
+                params.Set("query", q.q)
+        }</span>
+
+        <span class="cov9" title="40">for k, v := range q.match </span><span class="cov1" title="1">{
+                params.Set(k+"[match]", v)
+        }</span>
+
+        <span class="cov9" title="40">for k, v := range q.near </span><span class="cov1" title="1">{
+                params.Set(k+"[near]", v)
+        }</span>
+
+        <span class="cov9" title="40">for k, v := range q.within </span><span class="cov2" title="2">{
+                params.Set(k+"[within]", v)
+        }</span>
+
+        <span class="cov9" title="40">if len(q.order) &gt; 0 </span><span class="cov5" title="8">{
+                // if q.contentType == "" {
+                // panic("you should provide a content type for order queries")
+                // }
+
+                params.Set("order", strings.Join(q.order, ","))
+        }</span>
+
+        <span class="cov9" title="40">if q.limit != 0 </span><span class="cov2" title="2">{
+                if q.limit &gt; 1000 </span><span class="cov1" title="1">{
+                        panic("limit value should be between 0 and 1000")</span>
+                }
+
+                <span class="cov1" title="1">params.Set("limit", strconv.Itoa(int(q.limit)))</span>
+        }
+
+        <span class="cov9" title="39">if q.skip != 0 </span><span class="cov2" title="2">{
+                params.Set("skip", strconv.Itoa(int(q.skip)))
+        }</span>
+
+        <span class="cov9" title="39">if q.mime != "" </span><span class="cov1" title="1">{
+                params.Set("mimetype_group", q.mime)
+        }</span>
+
+        <span class="cov9" title="39">if q.locale != "" </span><span class="cov0" title="0">{
+                params.Set("locale", q.locale)
+        }</span>
+
+        <span class="cov9" title="39">return params</span>
+}
+
+func (q *Query) String() string <span class="cov10" title="44">{
+        return q.Values().Encode()
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package contentful
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "net/http"
+        "strconv"
+)
+
+// SpacesService model
+type SpacesService service
+
+// Space model
+type Space struct {
+        Sys           *Sys   `json:"sys,omitempty"`
+        Name          string `json:"name,omitempty"`
+        DefaultLocale string `json:"defaultLocale,omitempty"`
+}
+
+// MarshalJSON for custom json marshaling
+func (space *Space) MarshalJSON() ([]byte, error) <span class="cov10" title="6">{
+        return json.Marshal(&amp;struct {
+                Name          string `json:"name,omitempty"`
+                DefaultLocale string `json:"defaultLocale,omitempty"`
+        }{
+                Name:          space.Name,
+                DefaultLocale: space.DefaultLocale,
+        })
+}</span>
+
+// GetVersion returns entity version
+func (space *Space) GetVersion() int <span class="cov6" title="3">{
+        version := 1
+        if space.Sys != nil </span><span class="cov1" title="1">{
+                version = space.Sys.Version
+        }</span>
+
+        <span class="cov6" title="3">return version</span>
+}
+
+// List creates a spaces collection
+func (service *SpacesService) List() *Collection <span class="cov4" title="2">{
+        req, _ := service.c.newRequest("GET", "/spaces", nil, nil)
+
+        col := NewCollection(&amp;CollectionOptions{})
+        col.c = service.c
+        col.req = req
+
+        return col
+}</span>
+
+// Get returns a single space entity
+func (service *SpacesService) Get(spaceID string) (*Space, error) <span class="cov6" title="3">{
+        path := fmt.Sprintf("/spaces/%s", spaceID)
+        req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;Space{}, err
+        }</span>
+
+        <span class="cov6" title="3">var space Space
+        if ok := service.c.do(req, &amp;space); ok != nil </span><span class="cov1" title="1">{
+                return &amp;Space{}, ok
+        }</span>
+
+        <span class="cov4" title="2">return &amp;space, nil</span>
+}
+
+// Upsert updates or creates a new space
+func (service *SpacesService) Upsert(space *Space) error <span class="cov6" title="3">{
+        bytesArray, err := json.Marshal(space)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov6" title="3">var path string
+        var method string
+
+        if space.Sys != nil &amp;&amp; space.Sys.CreatedAt != "" </span><span class="cov1" title="1">{
+                path = fmt.Sprintf("/spaces/%s", space.Sys.ID)
+                method = http.MethodPut
+        }</span> else<span class="cov4" title="2"> {
+                path = "/spaces"
+                method = http.MethodPost
+        }</span>
+
+        <span class="cov6" title="3">req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov6" title="3">req.Header.Set("X-Contentful-Version", strconv.Itoa(space.GetVersion()))
+
+        return service.c.do(req, space)</span>
+}
+
+// Delete the given space
+func (service *SpacesService) Delete(space *Space) error <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s", space.Sys.ID)
+
+        req, err := service.c.newRequest(http.MethodDelete, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov1" title="1">version := strconv.Itoa(space.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, nil)</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package contentful
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "strconv"
+)
+
+// WebhooksService service
+type WebhooksService service
+
+// Webhook model
+type Webhook struct {
+        Sys               *Sys             `json:"sys,omitempty"`
+        Name              string           `json:"name,omitempty"`
+        URL               string           `json:"url,omitempty"`
+        Topics            []string         `json:"topics,omitempty"`
+        HTTPBasicUsername string           `json:"httpBasicUsername,omitempty"`
+        HTTPBasicPassword string           `json:"httpBasicPassword,omitempty"`
+        Headers           []*WebhookHeader `json:"headers,omitempty"`
+}
+
+// WebhookHeader model
+type WebhookHeader struct {
+        Key   string `json:"key"`
+        Value string `json:"value"`
+}
+
+// GetVersion returns entity version
+func (webhook *Webhook) GetVersion() int <span class="cov10" title="2">{
+        version := 1
+        if webhook.Sys != nil </span><span class="cov1" title="1">{
+                version = webhook.Sys.Version
+        }</span>
+
+        <span class="cov10" title="2">return version</span>
+}
+
+// List returns webhooks collection
+func (service *WebhooksService) List(spaceID string) *Collection <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/webhook_definitions", spaceID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;Collection{}
+        }</span>
+
+        <span class="cov0" title="0">col := NewCollection(&amp;CollectionOptions{})
+        col.c = service.c
+        col.req = req
+
+        return col</span>
+}
+
+// Get returns a single webhook entity
+func (service *WebhooksService) Get(spaceID, webhookID string) (*Webhook, error) <span class="cov0" title="0">{
+        path := fmt.Sprintf("/spaces/%s/webhook_definitions/%s", spaceID, webhookID)
+        method := "GET"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">var webhook Webhook
+        if err := service.c.do(req, &amp;webhook); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;webhook, nil</span>
+}
+
+// Upsert updates or creates a new entity
+func (service *WebhooksService) Upsert(spaceID string, webhook *Webhook) error <span class="cov10" title="2">{
+        bytesArray, err := json.Marshal(webhook)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov10" title="2">var path string
+        var method string
+
+        if webhook.Sys != nil &amp;&amp; webhook.Sys.CreatedAt != "" </span><span class="cov1" title="1">{
+                path = fmt.Sprintf("/spaces/%s/webhook_definitions/%s", spaceID, webhook.Sys.ID)
+                method = "PUT"
+        }</span> else<span class="cov1" title="1"> {
+                path = fmt.Sprintf("/spaces/%s/webhook_definitions", spaceID)
+                method = "POST"
+        }</span>
+
+        <span class="cov10" title="2">req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov10" title="2">req.Header.Set("X-Contentful-Version", strconv.Itoa(webhook.GetVersion()))
+
+        return service.c.do(req, webhook)</span>
+}
+
+// Delete the webhook
+func (service *WebhooksService) Delete(spaceID string, webhook *Webhook) error <span class="cov1" title="1">{
+        path := fmt.Sprintf("/spaces/%s/webhook_definitions/%s", spaceID, webhook.Sys.ID)
+        method := "DELETE"
+
+        req, err := service.c.newRequest(method, path, nil, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov1" title="1">version := strconv.Itoa(webhook.Sys.Version)
+        req.Header.Set("X-Contentful-Version", version)
+
+        return service.c.do(req, nil)</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
